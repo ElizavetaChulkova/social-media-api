@@ -9,9 +9,9 @@ import ru.chulkova.socialmediaapi.config.JwtService;
 import ru.chulkova.socialmediaapi.model.Role;
 import ru.chulkova.socialmediaapi.model.User;
 import ru.chulkova.socialmediaapi.repository.UserRepository;
-import ru.chulkova.socialmediaapi.token.Token;
-import ru.chulkova.socialmediaapi.token.TokenRepository;
-import ru.chulkova.socialmediaapi.token.TokenType;
+import ru.chulkova.socialmediaapi.auth.token.Token;
+import ru.chulkova.socialmediaapi.auth.token.TokenRepository;
+import ru.chulkova.socialmediaapi.auth.token.TokenType;
 
 @Service
 @RequiredArgsConstructor

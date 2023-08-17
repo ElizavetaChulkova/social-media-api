@@ -1,4 +1,4 @@
-package ru.chulkova.socialmediaapi.token;
+package ru.chulkova.socialmediaapi.auth.token;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
