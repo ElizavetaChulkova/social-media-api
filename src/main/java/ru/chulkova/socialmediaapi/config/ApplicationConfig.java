@@ -1,6 +1,8 @@
 package ru.chulkova.socialmediaapi.config;
 
+import jakarta.servlet.MultipartConfigElement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.unit.DataSize;
 import ru.chulkova.socialmediaapi.repository.UserRepository;
 
 @Configuration
@@ -41,5 +44,13 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public MultipartConfigElement multipartConfig() {
+        MultipartConfigFactory f = new MultipartConfigFactory();
+        f.setMaxFileSize(DataSize.ofBytes(5000000)); //applies to one file size
+        f.setMaxRequestSize(DataSize.ofBytes(5000000)); //applies to total size of HTTP request
+        return f.createMultipartConfig();
     }
 }

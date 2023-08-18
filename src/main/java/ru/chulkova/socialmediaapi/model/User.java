@@ -1,10 +1,14 @@
 package ru.chulkova.socialmediaapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +32,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
 
@@ -47,7 +52,12 @@ public class User extends AbstractBaseEntity implements UserDetails {
     )
     private List<User> subscribers;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Post> posts;
+
     @Enumerated(EnumType.STRING)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Role role;
 
     @Override
