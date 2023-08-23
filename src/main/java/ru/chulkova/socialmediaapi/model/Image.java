@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "image")
 public class Image extends AbstractBaseEntity {
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     private String name;
 
     @Lob
-    @Column(name = "image")
+    @Column(name = "content")
     byte[] content;
 }

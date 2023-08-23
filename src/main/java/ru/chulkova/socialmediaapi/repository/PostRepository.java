@@ -1,5 +1,6 @@
 package ru.chulkova.socialmediaapi.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,5 +32,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                                            WHERE f.user_id = :userId
                 )
             """, nativeQuery = true)
-    List<Post> getPostsByFriends(@Param("userId") Long userId);
+    List<Post> getPostsByFriends(@Param("userId") Long userId, Pageable pageable);
 }
