@@ -14,4 +14,5 @@ public class PostDto {
     private String title;
     private String text;
     private String image;
+    private UserDto author;
 }

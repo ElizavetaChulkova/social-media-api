@@ -11,6 +11,7 @@ public class PostMapper extends AbstractBaseEntity {
                 .title(post.getTitle())
                 .text(post.getText())
                 .image(post.getImage())
+                .author(UserMapper.getTo(post.getUser()))
                 .build();
     }
 }
