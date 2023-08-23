@@ -8,27 +8,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "post")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post extends AbstractBaseEntity{
+public class Post extends AbstractBaseEntity {
 
     @Column(name = "title")
     private String title;
+
+    private LocalDateTime dateTime;
 
     @Lob
     @Column(name = "text")
     private String text;
 
-    @PrimaryKeyJoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
-    private Image imageId;
+    @Lob
+    @Column(name = "image")
+    private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User userId;
+    private User user;
 }

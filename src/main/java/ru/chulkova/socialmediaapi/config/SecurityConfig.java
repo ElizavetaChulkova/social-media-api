@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**")
                 .permitAll()
-                .requestMatchers("/v1/api-docs", "/v2/api-docs",
+                .requestMatchers(
+                        "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
                         "/swagger-resources",
@@ -39,7 +40,9 @@ public class SecurityConfig {
                         "/configuration/security",
                         "/swagger-ui/**",
                         "/webjars/**",
-                        "/swagger-ui.html").permitAll()
+                        "/swagger-ui.html",
+                        "/api/image/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

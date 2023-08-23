@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.chulkova.socialmediaapi.dto.ProfileDto;
 import ru.chulkova.socialmediaapi.dto.UserDto;
@@ -19,25 +20,27 @@ public class ProfileController {
 
     private final UserRepository repository;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ProfileDto> getProfile(@PathVariable("userId") Long userId) {
+    @GetMapping
+    public ResponseEntity<ProfileDto> getProfile(@AuthenticationPrincipal User user) {
         log.info("get user profile info");
-        return ResponseEntity.ok(UserMapper.getProfile(repository.findById(userId).orElseThrow()));
+        return ResponseEntity.ok(UserMapper.getProfile(repository.findById(user.id())
+                .orElseThrow()));
     }
 
-    @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> updateProfile(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
-        log.info("update user profile {}", userId);
-        User toUpdate = repository.findById(userId).orElseThrow();
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> updateProfile(@AuthenticationPrincipal User user,
+                                                 @RequestBody UserDto userDto) {
+        log.info("update user profile {}", user.id());
+        User toUpdate = repository.findById(user.id()).orElseThrow();
         toUpdate.setName(userDto.getName());
         repository.save(toUpdate);
-        return ResponseEntity.ok(UserMapper.getTo(repository.findById(userId).orElseThrow()));
+        return ResponseEntity.ok(UserMapper.getTo(repository.findById(user.id())
+                .orElseThrow()));
     }
 
-    @DeleteMapping("/{userId}")
-    public void delete(@PathVariable("userId") Long userId) {
+    @DeleteMapping
+    public void delete(@AuthenticationPrincipal User user) {
         log.info("delete user profile");
-        User user = repository.findById(userId).orElseThrow();
         repository.delete(user);
     }
 }

@@ -13,4 +13,5 @@ import ru.chulkova.socialmediaapi.model.AbstractBaseEntity;
 public class UserDto extends AbstractBaseEntity {
 
     private String name;
+    private String email;
 }

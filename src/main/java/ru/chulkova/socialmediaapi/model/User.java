@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Table(name = "users", uniqueConstraints =
-@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx"))
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,29 +36,44 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "friends",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"),
+            uniqueConstraints =
+            @UniqueConstraint(columnNames = {"user_id", "friend_id"}, name = "friends_unique_idx")
     )
     private List<User> friends;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "subscribers",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id", referencedColumnName = "id"),
+            uniqueConstraints =
+            @UniqueConstraint(columnNames = {"user_id", "subscriber_id"}, name = "subscribers_unique_idx")
     )
     private List<User> subscribers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OrderBy("dateTime DESC")
     private List<Post> posts;
 
     @Enumerated(EnumType.STRING)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Role role;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "requests",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "requester_id", referencedColumnName = "id"),
+            uniqueConstraints =
+            @UniqueConstraint(columnNames = {"user_id", "requester_id"}, name = "requester_unique_idx")
+    )
+    private List<User> requests;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
