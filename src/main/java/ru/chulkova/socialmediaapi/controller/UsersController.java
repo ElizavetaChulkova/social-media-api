@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.chulkova.socialmediaapi.dto.ProfileDto;
-import ru.chulkova.socialmediaapi.mapper.UserMapper;
-import ru.chulkova.socialmediaapi.repository.UserRepository;
+import ru.chulkova.socialmediaapi.service.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -18,14 +16,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UsersController {
 
-    private final UserRepository repository;
+    private final UserService service;
 
     @GetMapping
     public List<ProfileDto> getAll() {
         log.info("get all users");
-        return repository.findAll()
-                .stream()
-                .map(UserMapper::getProfile)
-                .collect(Collectors.toList());
+        return service.getAll();
     }
 }
