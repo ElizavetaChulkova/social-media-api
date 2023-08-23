@@ -25,7 +25,7 @@ public class UsersController {
         log.info("get all users");
         return repository.findAll()
                 .stream()
-                .map(user -> UserMapper.getProfile(user))
+                .map(UserMapper::getProfile)
                 .collect(Collectors.toList());
     }
 }
