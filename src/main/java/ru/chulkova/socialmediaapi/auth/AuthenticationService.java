@@ -3,15 +3,18 @@ package ru.chulkova.socialmediaapi.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.chulkova.socialmediaapi.config.JwtService;
-import ru.chulkova.socialmediaapi.model.Role;
-import ru.chulkova.socialmediaapi.model.User;
-import ru.chulkova.socialmediaapi.repository.UserRepository;
 import ru.chulkova.socialmediaapi.auth.token.Token;
 import ru.chulkova.socialmediaapi.auth.token.TokenRepository;
 import ru.chulkova.socialmediaapi.auth.token.TokenType;
+import ru.chulkova.socialmediaapi.config.JwtService;
+import ru.chulkova.socialmediaapi.exception.AccessDeniedException;
+import ru.chulkova.socialmediaapi.exception.UserNotFoundException;
+import ru.chulkova.socialmediaapi.model.Role;
+import ru.chulkova.socialmediaapi.model.User;
+import ru.chulkova.socialmediaapi.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +44,14 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        } catch (AuthenticationException e) {
+            throw new AccessDeniedException();
+        }
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.chulkova.socialmediaapi.dto.ProfileDto;
 import ru.chulkova.socialmediaapi.dto.UserDto;
+import ru.chulkova.socialmediaapi.exception.UserNotFoundException;
 import ru.chulkova.socialmediaapi.mapper.UserMapper;
 import ru.chulkova.socialmediaapi.model.User;
 import ru.chulkova.socialmediaapi.repository.UserRepository;
@@ -27,8 +28,10 @@ public class UserService {
 
     public void follow(Long followerId, Long userId) {
         assert !Objects.equals(followerId, userId);
-        User updated = repository.findById(userId).orElseThrow();
-        User follower = repository.findById(followerId).orElseThrow();
+        User updated = repository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        User follower = repository.findById(followerId)
+                .orElseThrow(UserNotFoundException::new);
         updated.getSubscribers().add(follower);
         updated.getRequests().add(follower);
         repository.save(updated);
@@ -36,8 +39,10 @@ public class UserService {
 
     public void accept(Long followerId, Long toFollowId) {
         assert !Objects.equals(followerId, toFollowId);
-        User userInfo = repository.findById(toFollowId).orElseThrow();
-        User followerInfo = repository.findById(followerId).orElseThrow();
+        User userInfo = repository.findById(toFollowId)
+                .orElseThrow(UserNotFoundException::new);
+        User followerInfo = repository.findById(followerId)
+                .orElseThrow(UserNotFoundException::new);
         userInfo.getFriends().add(followerInfo);
         userInfo.getRequests().remove(followerInfo);
         followerInfo.getFriends().add(userInfo);
@@ -48,8 +53,10 @@ public class UserService {
 
     public void deny(Long followerId, Long userId) {
         assert !Objects.equals(followerId, userId);
-        User userInfo = repository.findById(userId).orElseThrow();
-        User follower = repository.findById(followerId).orElseThrow();
+        User userInfo = repository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        User follower = repository.findById(followerId)
+                .orElseThrow(UserNotFoundException::new);
         userInfo.getRequests().remove(follower);
         repository.save(userInfo);
     }

@@ -8,6 +8,7 @@ public class UserMapper {
 
     public static ProfileDto getProfile(User user) {
         return ProfileDto.builder()
+                .id(user.id())
                 .name(user.getName())
                 .email(user.getEmail())
                 .posts(user.getPosts())
@@ -18,6 +19,7 @@ public class UserMapper {
 
     public static UserDto getTo(User user) {
         return UserDto.builder()
+                .id(user.id())
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();

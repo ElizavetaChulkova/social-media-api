@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.chulkova.socialmediaapi.dto.PostDto;
+import ru.chulkova.socialmediaapi.exception.NotFoundException;
 import ru.chulkova.socialmediaapi.mapper.PostMapper;
 import ru.chulkova.socialmediaapi.model.Image;
 import ru.chulkova.socialmediaapi.model.Post;
@@ -60,7 +61,7 @@ public class PostService {
 
     public Image updateImage(MultipartFile multipartImage) throws IOException {
         Image toUpdate = imageRepository.findByName(multipartImage.getName())
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundException("Image not found"));
         assert toUpdate != null;
         toUpdate.setName(multipartImage.getName());
         toUpdate.setContent(multipartImage.getBytes());
@@ -69,7 +70,8 @@ public class PostService {
     }
 
     public PostDto updatePost(Long postId, String title, String text, String uri) {
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post not found"));
         post.setTitle(title);
         post.setText(text);
         post.setImage(uri);

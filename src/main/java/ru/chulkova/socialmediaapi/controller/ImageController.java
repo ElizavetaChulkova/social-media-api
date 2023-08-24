@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+import ru.chulkova.socialmediaapi.exception.NotFoundException;
 import ru.chulkova.socialmediaapi.repository.ImageRepository;
 import ru.chulkova.socialmediaapi.service.PostService;
 
@@ -32,7 +31,7 @@ public class ImageController {
     @GetMapping(value = "/download/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public Resource downloadImage(@PathVariable Long imageId) {
         byte[] image = imageRepository.findById(imageId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .orElseThrow(() -> new NotFoundException("Image not found"))
                 .getContent();
         return new ByteArrayResource(image);
     }

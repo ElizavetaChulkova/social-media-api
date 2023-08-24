@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.chulkova.socialmediaapi.dto.ProfileDto;
 import ru.chulkova.socialmediaapi.dto.UserDto;
+import ru.chulkova.socialmediaapi.exception.UserNotFoundException;
 import ru.chulkova.socialmediaapi.mapper.UserMapper;
 import ru.chulkova.socialmediaapi.model.User;
 import ru.chulkova.socialmediaapi.repository.UserRepository;
@@ -24,7 +25,7 @@ public class ProfileController {
     public ResponseEntity<ProfileDto> getProfile(@AuthenticationPrincipal User user) {
         log.info("get user profile info");
         return ResponseEntity.ok(UserMapper.getProfile(repository.findById(user.id())
-                .orElseThrow()));
+                .orElseThrow(UserNotFoundException::new)));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +36,7 @@ public class ProfileController {
         toUpdate.setName(userDto.getName());
         repository.save(toUpdate);
         return ResponseEntity.ok(UserMapper.getTo(repository.findById(user.id())
-                .orElseThrow()));
+                .orElseThrow(UserNotFoundException::new)));
     }
 
     @DeleteMapping

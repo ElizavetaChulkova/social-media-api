@@ -3,6 +3,9 @@ package ru.chulkova.socialmediaapi.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,13 +30,20 @@ import java.util.List;
 public class User extends AbstractBaseEntity implements UserDetails {
 
     @Column(name = "name", nullable = false)
+    @NotNull
+    @Size(min = 2, max = 255)
     private String name;
 
+    @Email
     @Column(name = "email", nullable = false, unique = true)
+    @Size(min = 5, max = 255)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
+    @NotNull
+    @Size(min = 5, max = 255,
+            message = "password length must be between 5 and 255")
     private String password;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -57,7 +67,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
     private List<User> subscribers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("dateTime DESC")
     private List<Post> posts;
 
     @Enumerated(EnumType.STRING)

@@ -8,6 +8,7 @@ public class PostMapper extends AbstractBaseEntity {
 
     public static PostDto getTo(Post post) {
         return PostDto.builder()
+                .id(post.id())
                 .title(post.getTitle())
                 .text(post.getText())
                 .image(post.getImage())
