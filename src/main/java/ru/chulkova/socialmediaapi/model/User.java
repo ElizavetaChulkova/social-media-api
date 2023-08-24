@@ -46,7 +46,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
             message = "password length must be between 5 and 255")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "friends",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -56,7 +56,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     )
     private List<User> friends;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "subscribers",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -66,7 +66,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     )
     private List<User> subscribers;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<Post> posts;
 
     @Enumerated(EnumType.STRING)
@@ -74,7 +74,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Role role;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "requests",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
