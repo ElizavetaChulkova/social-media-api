@@ -18,6 +18,8 @@ import ru.chulkova.socialmediaapi.exception.ApplicationException;
 import ru.chulkova.socialmediaapi.exception.NotFoundException;
 import ru.chulkova.socialmediaapi.exception.UserNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
@@ -44,13 +46,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseStatusException validationException(WebRequest request,
-                                                       ConstraintViolationException ex) {
+    public ResponseStatusException validationException(ConstraintViolationException ex) {
         log.error("ConstraintViolationException: {}", ex.getMessage());
-        for (ConstraintViolation<?> e : ex.getConstraintViolations()) {
-            return new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    e.getPropertyPath() + " " + e.getMessage());
-        }
+        List<String> message = new ArrayList<>();
+        ex.getConstraintViolations().forEach(constraintViolation -> message.add(constraintViolation.getMessage()));
         return new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
